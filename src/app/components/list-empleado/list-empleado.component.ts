@@ -42,7 +42,7 @@ export class ListEmpleadoComponent implements OnInit {
   }
 
   cargarEmpleados(){
-    this.listEmpleado = this._empleadoService.getEmpleado();
+    this.listEmpleado = this._empleadoService.getEmpleados();
     this.dataSource = new MatTableDataSource(this.listEmpleado);
     this.dataSource.paginator = this.pag;
     this.dataSource.sort = this.sort;
@@ -61,11 +61,6 @@ export class ListEmpleadoComponent implements OnInit {
         }
       });
     }
-   
-  editarEmpleado(index: number){
-    console.log("elimina " + index);
-
-  }
 }
 
 

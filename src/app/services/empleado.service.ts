@@ -21,7 +21,7 @@ export class EmpleadoService {
 
   constructor() { }
 
-  getEmpleado(){
+  getEmpleados(){
     return this.listEmpleado.slice();
   }
   eliminarEmpleado(index : number){
@@ -29,5 +29,15 @@ export class EmpleadoService {
   }
   almacenarEmpleado(empleado: Empleado) {
     this.listEmpleado.unshift(empleado);
+  }
+  getEditEmpleado(index: number) {
+  return this.listEmpleado[index];
+  }
+  EditEmpleado(empleado:Empleado,idEmpleado: number) {
+    this.listEmpleado[idEmpleado].nombreCompleto = empleado.nombreCompleto;
+    this.listEmpleado[idEmpleado].correo = empleado.correo;
+    this.listEmpleado[idEmpleado].fechaIngreso = empleado.fechaIngreso;
+    this.listEmpleado[idEmpleado].estadoCivil = empleado.estadoCivil;
+    this.listEmpleado[idEmpleado].sexo = empleado.sexo;
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Empleado } from '../../models/empleado';
 import { EmpleadoService } from '../../services/empleado.service';
 
@@ -19,17 +19,20 @@ export class AddEditEmpleadoComponent implements OnInit {
 
   estadoCiviles : any[] = ['Soltero', 'Casado' , 'Divorsiado'];
   forms : FormGroup;
-
+  accion = 'Crear';
+  idEmpleado:any;
   constructor(private fb :FormBuilder , private _empleadoService : EmpleadoService , private route : Router,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar , private aRoute : ActivatedRoute) {
     this.forms = this.fb.group({
-      nombreCompleto: ['', Validators.required , Validators.maxLength(20)],
-      correo: '',
-      fechaIngreso: '',
-      telefono: '',
-      estadoCivil:'',
-      sexo:''
+      nombreCompleto: ['', [Validators.required , Validators.maxLength(20)]],
+      correo: ['', [Validators.required, Validators.email]],
+      fechaIngreso: ['', [Validators.required]],
+      telefono: ['', [Validators.required]],
+      estadoCivil: ['', [Validators.required]],
+      sexo: ['', [Validators.required]],
     });
+    const idParam = 'id';
+    this.idEmpleado = this.aRoute.snapshot.params[idParam]
    }
 
   guardarEmpleado(){
@@ -41,11 +44,49 @@ export class AddEditEmpleadoComponent implements OnInit {
       estadoCivil : this.forms.get('estadoCivil')?.value,
       sexo : this.forms.get('sexo')?.value
     }
-    this._empleadoService.almacenarEmpleado(empleado);
+    if(this.idEmpleado !==undefined)
+    {
+      this.editarEmpleado(empleado);
+
+    }else 
+    {
+      this.agregarEmpleado(empleado);
+    }  
+  }
+  agregarEmpleado(empleado :Empleado){
+    if (this.forms.valid) {
+      this._empleadoService.almacenarEmpleado(empleado);
+      this.snackBar.open('Empleado Agregado con exito', '', { duration: 3000 });
+      this.route.navigate(['/']);
+    }
+  }
+  editarEmpleado(empleado: Empleado){
+    this._empleadoService.EditEmpleado(empleado,this.idEmpleado);
     this.snackBar.open('Empleado Agregado con exito', '', { duration: 3000 });
     this.route.navigate(['/']);
+  }
+
+  esEditEmpleado() {
+   const empleado : Empleado =  this._empleadoService.getEditEmpleado(this.idEmpleado);
+
+   this.forms.patchValue({
+    
+    nombreCompleto: empleado.nombreCompleto,
+    correo: empleado.correo,
+    fechaIngreso: empleado.fechaIngreso,
+    telefono: empleado.telefono,
+    estadoCivil : empleado.estadoCivil,
+    sexo: empleado.sexo
+
+   });
 
   }
+
   ngOnInit(): void {
+    if(this.idEmpleado !== undefined)
+    {
+      this.accion = 'Editar';
+      this.esEditEmpleado();
+    }
   }
 }

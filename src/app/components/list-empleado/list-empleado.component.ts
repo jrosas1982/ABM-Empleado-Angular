@@ -6,6 +6,7 @@ import { EmpleadoService } from '../../services/empleado.service';
 import { Empleado } from '../../models/empleado';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeConfirmacionComponent } from '../shared/mensaje-confirmacion/mensaje-confirmacion.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -25,7 +26,7 @@ export class ListEmpleadoComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
 
-  constructor(private _empleadoService: EmpleadoService, public dialog: MatDialog) {
+  constructor(private _empleadoService: EmpleadoService, public dialog: MatDialog, public snackBar : MatSnackBar) {
 
 
    }
@@ -56,6 +57,7 @@ export class ListEmpleadoComponent implements OnInit {
         if(result === 'Aceptar'){
           this._empleadoService.eliminarEmpleado(index);
           this.cargarEmpleados();
+          this.snackBar.open('Empleado eliminado con exito','',{duration: 3000} );
         }
       });
     }

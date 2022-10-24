@@ -27,4 +27,7 @@ export class EmpleadoService {
   eliminarEmpleado(index : number){
     this.listEmpleado.splice(index,1);
   }
+  almacenarEmpleado(empleado: Empleado) {
+    this.listEmpleado.unshift(empleado);
+  }
 }
